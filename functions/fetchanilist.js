@@ -30,7 +30,8 @@ async function fetchData() {
                             medium
                         }
                         title {
-                            userPreferred
+                            english
+                            romaji
                         }
                         siteUrl
                     }
@@ -49,7 +50,7 @@ async function fetchData() {
         i.media.siteUrl,
         i.media.coverImage.medium,
         `${i.status} ${i.progress}`.charAt(0).toUpperCase() + `${i.status} ${i.progress}`.slice(1),
-        i.media.title.userPreferred,
+        i.media.title.english || i.media.title.romaji,
         i.createdAt
     ]));
 }
