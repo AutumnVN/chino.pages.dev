@@ -49,7 +49,7 @@ async function fetchData() {
     return data.Page.activities.map(i => ([
         i.media.siteUrl,
         i.media.coverImage.medium,
-        `${i.status} ${i.progress}`.charAt(0).toUpperCase() + `${i.status} ${i.progress}`.slice(1),
+        `${i.status}${i.progress ? ` ${i.progress}` : ''}`.charAt(0).toUpperCase() + `${i.status}${i.progress ? ` ${i.progress}` : ''}`.slice(1),
         i.media.title.english || i.media.title.romaji,
         i.createdAt
     ]));
