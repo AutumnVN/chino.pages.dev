@@ -22,12 +22,13 @@ async function fetchData(env) {
         a: repository(owner: "AutumnVN", name: "chino.pages.dev") { stargazers { totalCount } forks { totalCount } }
         b: repository(owner: "AutumnVN", name: "autumn") { stargazers { totalCount } forks { totalCount } }
         c: repository(owner: "AutumnVN", name: "highlight") { stargazers { totalCount } forks { totalCount } }
-        d: repository(owner: "AutumnVN", name: "osu-igdl") { stargazers { totalCount } forks { totalCount } }
-        e: repository(owner: "AutumnVN", name: "osu-mpbd") { stargazers { totalCount } forks { totalCount } }
-        f: repository(owner: "AutumnVN", name: "osu-ubu") { stargazers { totalCount } forks { totalCount } }
-        g: repository(owner: "AutumnVN", name: "bot") { stargazers { totalCount } forks { totalCount } }
-        h: repository(owner: "Vendicated", name: "Vencord") { stargazers { totalCount } forks { totalCount } }
-        i: repository(owner: "Team-BTMC", name: "ppcounter-overlay") { stargazers { totalCount } forks { totalCount } }
+        d: repository(owner: "AutumnVN", name: "userscript") { stargazers { totalCount } forks { totalCount } }
+        e: repository(owner: "AutumnVN", name: "AutoWhipStacking") { stargazers { totalCount } forks { totalCount } }
+        f: repository(owner: "AutumnVN", name: "FasterOldOnesArmy") { stargazers { totalCount } forks { totalCount } }
+        g: repository(owner: "AutumnVN", name: "osu-igdl") { stargazers { totalCount } forks { totalCount } }
+        h: repository(owner: "AutumnVN", name: "osu-mpbd") { stargazers { totalCount } forks { totalCount } }
+        i: repository(owner: "AutumnVN", name: "osu-ubu") { stargazers { totalCount } forks { totalCount } }
+        j: repository(owner: "AutumnVN", name: "bot") { stargazers { totalCount } forks { totalCount } }
 
         z: user(login: "AutumnVN") {
             repositories(first: 100, ownerAffiliations: OWNER) {
