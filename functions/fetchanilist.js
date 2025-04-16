@@ -40,13 +40,17 @@ async function fetchData() {
         }
     }`;
 
-    const { data } = await fetch('https://graphql.anilist.co', {
+    const res2 = await fetch('https://graphql.anilist.co', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ query })
     }).then(r => r.json());
 
-    return data.Page.activities.map(i => ([
+    if (!res2.data) {
+        return null;
+    }
+
+    return res2.data.Page.activities.map(i => ([
         i.media.siteUrl,
         i.media.coverImage.medium,
         `${i.status}${i.progress ? ` ${i.progress}` : ''}`.charAt(0).toUpperCase() + `${i.status}${i.progress ? ` ${i.progress}` : ''}`.slice(1),
@@ -58,7 +62,9 @@ async function fetchData() {
 async function updateCache(url, data = null) {
     if (!data) {
         data = await fetchData();
+        if (!data) return;
     }
+
     await caches.default.put(url, new Response(JSON.stringify(data), {
         headers: {
             'content-type': 'application/json',
