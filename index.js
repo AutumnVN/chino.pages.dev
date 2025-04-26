@@ -82,14 +82,46 @@ const TIME_UNIT = [
     ['minute', 60]
 ];
 
-fetch('/fetchanilist').then(r => r.json()).then(activities => {
-    document.querySelectorAll('.anilist .activity').forEach((a, i) => a.href = activities[i][0]);
-    document.querySelectorAll('.anilist .activity .image').forEach((i, j) => i.style = `background-image: url(${imageProxy(activities[j][1])})`);
-    document.querySelectorAll('.anilist .activity .status').forEach((s, i) => s.textContent = activities[i][2]);
-    document.querySelectorAll('.anilist .activity .title').forEach((t, i) => t.textContent = activities[i][3]);
+!async function anilist() {
+    const query = `query {
+        Page(page: 1, perPage: 4) {
+            activities(userId: 6851565, sort: ID_DESC) {
+                ... on ListActivity {
+                    createdAt
+                    status
+                    progress
+                    media {
+                        coverImage {
+                            medium
+                        }
+                        title {
+                            english
+                            romaji
+                        }
+                        siteUrl
+                    }
+                }
+            }
+        }
+    }`;
+
+    const res = await fetch('https://graphql.anilist.co', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ query })
+    }).then(r => r.json());
+
+    if (!res.data) return;
+
+    const { activities } = res.data.Page;
+
+    document.querySelectorAll('.anilist .activity').forEach((a, i) => a.href = activities[i].media.siteUrl);
+    document.querySelectorAll('.anilist .activity .image').forEach((i, j) => i.style = `background-image: url(${imageProxy(activities[j].media.coverImage.medium)})`);
+    document.querySelectorAll('.anilist .activity .status').forEach((s, i) => s.textContent = `${activities[i].status}${activities[i].progress ? ` ${activities[i].progress}` : ''}`.charAt(0).toUpperCase() + `${activities[i].status}${activities[i].progress ? ` ${activities[i].progress}` : ''}`.slice(1));
+    document.querySelectorAll('.anilist .activity .title').forEach((t, i) => t.textContent = activities[i].media.title.english || activities[i].media.title.romaji);
     document.querySelectorAll('.anilist .activity time').forEach((t, i) => {
         const now = Math.floor(Date.now() / 1000);
-        const diff = now - activities[i][4];
+        const diff = now - activities[i].createdAt;
         let textContent = 'just now';
 
         for (const [unit, value] of TIME_UNIT) {
@@ -101,10 +133,10 @@ fetch('/fetchanilist').then(r => r.json()).then(activities => {
         }
 
         t.textContent = textContent;
-        t.setAttribute('datetime', new Date(activities[i][4] * 1000).toISOString());
-        t.title = new Date(activities[i][4] * 1000).toLocaleString();
+        t.setAttribute('datetime', new Date(activities[i].createdAt * 1000).toISOString());
+        t.title = new Date(activities[i].createdAt * 1000).toLocaleString();
     });
-});
+}();
 
 fetch('/fetchlanyard').then(r => r.json()).then(updateLanyard);
 
