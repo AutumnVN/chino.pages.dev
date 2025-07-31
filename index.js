@@ -178,10 +178,14 @@ function updateLanyard({ discord_user, discord_status, activities }) {
 
     const a = activities[0];
 
-    ['large', 'small'].forEach(s => {
+    ['large', 'small'].forEach(async s => {
         const size = s === 'large' ? 160 : 60;
         let imageUrl = a.assets?.[`${s}_image`];
         if (!imageUrl) {
+            if (s === 'large') {
+                const { icon } = await fetch(`https://discord.com/api/v10/applications/${a.application_id}/rpc`).then(r => r.json());
+                if (icon) return update(`.discord .${s}-image`, 'style', `background-image: url(${imageProxy(`https://cdn.discordapp.com/app-icons/${a.application_id}/${icon}.png?size=${size}`)})`);
+            }
             update(`.discord .${s}-image`, 'style', '');
             update(`.discord .${s}-image`, 'title', '');
             if (s === 'small') update(`.discord .image-container foreignObject`, 'mask', '');
