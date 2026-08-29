@@ -21,7 +21,7 @@ async function fetchData(env) {
     const query = `{
         a: repository(owner: "Pantherasami", name: "kusanagiasami.pages.dev") { stargazers { totalCount } forks { totalCount } }
 
-        z: user(login: "AutumnVN") {
+        z: user(login: "Pantherasami") {
             repositories(first: 100, ownerAffiliations: OWNER) {
                 nodes {
                     stargazerCount
@@ -48,7 +48,7 @@ async function fetchData(env) {
         headers: {
             'accept': 'application/json',
             'authorization': `bearer ${env.GITHUB_TOKEN}`,
-            'user-agent': 'AutumnVN'
+            'user-agent': 'Pantherasami'
         },
         body: JSON.stringify({ query })
     }).then(r => r.json());

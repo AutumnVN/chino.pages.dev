@@ -1,3 +1,53 @@
+async function loadAnilistActivity() {
+    try {
+        const [{ User }, { Page }] = await Promise.all([
+            anilistGetUser(),
+            anilistGetActivity()
+        ]);
+
+        // Set avatar
+        const avatarDiv = document.getElementById('anilist-avatar');
+        avatarDiv.style.backgroundImage = `url(${User.avatar.large})`;
+        avatarDiv.style.backgroundSize = 'cover';
+        avatarDiv.style.backgroundColor = 'transparent';
+        avatarDiv.querySelector('svg').style.display = 'none';
+
+        // Set activities
+        const activityEls = document.querySelectorAll('.anilist .activity');
+        Page.activities.forEach((act, i) => {
+            if (!activityEls[i] || !act.media) return;
+            const el = activityEls[i];
+            el.href = act.siteUrl;
+            el.querySelector('.image').style.backgroundImage = `url(${act.media.coverImage.medium})`;
+            el.querySelector('.status').textContent = act.status;
+            el.querySelector('.title').textContent = act.media.title.userPreferred;
+            el.querySelector('time').textContent = new Date(act.createdAt * 1000).toLocaleDateString();
+        });
+    } catch (e) {
+        console.error('AniList error:', e);
+    }
+}
+
+loadAnilistActivity();
+
+async function loadLastFm() {
+    try {
+        const res = await fetch('/fetchlastfm');
+        if (!res.ok) return;
+        const { isPlaying, title, artist, image, url } = await res.json();
+
+        document.getElementById('lastfm-title').textContent = title;
+        document.getElementById('lastfm-artist').textContent = artist;
+        document.getElementById('lastfm-status').textContent = isPlaying ? '▶ Now Playing' : 'Last played';
+        document.getElementById('lastfm-image').style.backgroundImage = `url(${image})`;
+        document.getElementById('lastfm-link').href = url;
+    } catch (e) {
+        console.error('Last.fm error:', e);
+    }
+}
+
+loadLastFm();
+
 updateScrollPercent();
 ['scroll', 'resize'].forEach(e => addEventListener(e, updateScrollPercent));
 
@@ -39,17 +89,55 @@ function applyBackgroundTransition() {
     bg.addEventListener('transitionend', () => bg.style.transition = '', { once: true });
 }
 
-const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 5 695 100"><style>@keyframes dash{0%{stroke-dashoffset:727px;}to{stroke-dashoffset:0;};}@keyframes stroke-width{0%{stroke-width:3px;}to{stroke-width:12px;};}@keyframes fade{0%{opacity:0;}to{opacity:1;};}path{fill:none;stroke:%23fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:3px;stroke-dasharray:727px;stroke-dashoffset:727px;animation:dash 1s cubic-bezier(.8,0,.2,1) var(--delay) forwards,stroke-width 1s cubic-bezier(.8,0,.2,1) calc(var(--delay) + .5s) forwards,fade .2s linear var(--delay) forwards;}</style><path d="M10 10v75m0-35l35-40m-15 18l30 57" style="--delay:0.3s"/><path d="M80 38.71v24.6q0 6.5 2.55 10.85t6.9 6.5q4.35 2.15 9.85 2.15 5.4 0 9.7-2.1 4.3-2.1 6.8-5.65 2.5-3.55 2.5-8.05v-28.3" style="--delay:0.5s"/><path d="M160 45c0-12-25-12-25 3c0 14 25 12 25 26c0 15-25 15-25 3" style="--delay:0.7s"/><path d="M210 38v46.4-23.2q0-23.2-15-23.2t-15 23.2t15 23.2q15 0 15-23.2" style="--delay:0.9s"/><path d="M230 38.71v46.4-30.6q0-4.5 2.5-8.1 2.5-3.6 6.8-5.65 4.3-2.05 9.7-2.05 5.5 0 9.85 2.15t6.9 6.45q2.55 4.3 2.55 10.9v26.9" style="--delay:1.1s"/><path d="M320 38v46.4-23.2q0-23.2-15-23.2t-15 23.2t15 23.2q15 0 15-23.2" style="--delay:1.3s"/><path d="M375 53q0-15-15-15q-15 0-15 15q0 15 15 15q15 0 15-15v32q0 15-15 15q-15 0-15-10" style="--delay:1.5s"/><path d="M395 24h6.1m-3 14.7v46.4" style="--delay:1.7s"/><path d="M430 85l22-68l22 68m-38-25h32" style="--delay:1.9s"/><path d="M520 45c0-12-25-12-25 3c0 14 25 12 25 26c0 15-25 15-25 3" style="--delay:2.1s"/><path d="M570 38v46.4-23.2q0-23.2-15-23.2t-15 23.2t15 23.2q15 0 15-23.2" style="--delay:2.3s"/><path d="M590 38.71v46.4-30.6q0-7 4.4-11.4t11.3-4.4q6.5 0 10.55 4.9 4.05 4.9 4.05 12.6v28.9-30.6q0-7 4.1-11.4 4.7-4.4 11.3-4.4 6.8 0 10.55 4.9 4.35 4.9 4.05 12.6l.3 28.9" style="--delay:2.5s"/><path d="M670 24h6.1m-3 14.7v46.4" style="--delay:2.7s"/></svg>';
+const svg =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 5 695 100">' +
+  '<style>' +
+  '@keyframes dash{0%{stroke-dashoffset:727px;}to{stroke-dashoffset:0;};}' +
+  '@keyframes stroke-width{0%{stroke-width:3px;}to{stroke-width:12px;};}' +
+  '@keyframes fade{0%{opacity:0;}to{opacity:1;};}' +
+  'path{' +
+  'fill:none;' +
+  'stroke:%23fff;' +
+  'stroke-linecap:round;' +
+  'stroke-linejoin:round;' +
+  'stroke-width:3px;' +
+  'stroke-dasharray:727px;' +
+  'stroke-dashoffset:727px;' +
+  'animation:' +
+  'dash 1s cubic-bezier(.8,0,.2,1) var(--delay) forwards,' +
+  'stroke-width 1s cubic-bezier(.8,0,.2,1) calc(var(--delay) + .5s) forwards,' +
+  'fade .2s linear var(--delay) forwards;' +
+  '}' +
+  '</style>' +
+  '<path d="M10 10v75m0-35l35-40m-15 18l30 57" style="--delay:0.3s"/>' +
+  '<path d="M80 38.71v24.6q0 6.5 2.55 10.85t6.9 6.5q4.35 2.15 9.85 2.15 5.4 0 9.7-2.1 4.3-2.1 6.8-5.65 2.5-3.55 2.5-8.05v-28.3" style="--delay:0.5s"/>' +
+  '<path d="M160 45c0-12-25-12-25 3c0 14 25 12 25 26c0 15-25 15-25 3" style="--delay:0.7s"/>' +
+  '<path d="M210 38v46.4-23.2q0-23.2-15-23.2t-15 23.2t15 23.2q15 0 15-23.2" style="--delay:0.9s"/>' +
+  '<path d="M230 38.71v46.4-30.6q0-4.5 2.5-8.1 2.5-3.6 6.8-5.65 4.3-2.05 9.7-2.05 5.5 0 9.85 2.15t6.9 6.45q2.55 4.3 2.55 10.9v26.9" style="--delay:1.1s"/>' +
+  '<path d="M320 38v46.4-23.2q0-23.2-15-23.2t-15 23.2t15 23.2q15 0 15-23.2" style="--delay:1.3s"/>' +
+  '<path d="M375 53q0-15-15-15q-15 0-15 15q0 15 15 15q15 0 15-15v32q0 15-15 15q-15 0-15-10" style="--delay:1.5s"/>' +
+  '<path d="M395 24h6.1m-3 14.7v46.4" style="--delay:1.7s"/>' +
+  '<path d="M430 85l22-68l22 68m-38-25h32" style="--delay:1.9s"/>' +
+  '<path d="M520 45c0-12-25-12-25 3c0 14 25 12 25 26c0 15-25 15-25 3" style="--delay:2.1s"/>' +
+  '<path d="M570 38v46.4-23.2q0-23.2-15-23.2t-15 23.2t15 23.2q15 0 15-23.2" style="--delay:2.3s"/>' +
+  '<path d="M590 38.71v46.4-30.6q0-7 4.4-11.4t11.3-4.4q6.5 0 10.55 4.9 4.05 4.9 4.05 12.6v28.9-30.6q0-7 4.1-11.4 4.7-4.4 11.3-4.4 6.8 0 10.55 4.9 4.35 4.9 4.05 12.6l.3 28.9" style="--delay:2.5s"/>' +
+  '<path d="M670 24h6.1m-3 14.7v46.4" style="--delay:2.7s"/>' +
+  '</svg>';
+
 const url = `url('data:image/svg+xml,${svg}')`;
 
-Object.assign(document.querySelector('header svg').style, {
-    maskImage: url,
-    WebkitMaskImage: url,
-    maskRepeat: 'no-repeat',
-    WebkitMaskRepeat: 'no-repeat',
-    maskSize: '100% 100%',
-    WebkitMaskSize: '100% 100%',
-});
+function applyNameAnimation() {
+    Object.assign(document.querySelector('header svg').style, {
+        maskImage: url,
+        WebkitMaskImage: url,
+        maskRepeat: 'no-repeat',
+        WebkitMaskRepeat: 'no-repeat',
+        maskSize: '100% 100%',
+        WebkitMaskSize: '100% 100%',
+    });
+}
+
+if (!document.getElementById('boot-terminal')) applyNameAnimation();
 
 document.querySelector('.arrow svg').addEventListener('click', () => {
     smoothScrollTo(innerWidth > 880 ? .25 * innerHeight + 30 : .25 * innerHeight + 380);

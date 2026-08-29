@@ -47,6 +47,21 @@ header {
     margin-top: 45vh;
 }
 
+/* Do not animate opacity/transform on `header` or `.name-container`: that breaks
+   mask-image + backdrop-filter on the title SVG in Chromium. Fade the title on
+   `header h1 svg` only (same element that carries the mask). The boot overlay
+   covers the hero until `boot-intro-done`; the avatar fades in separately. */
+
+@keyframes title-svg-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 @media (width < 1300px) {
     header {
         margin-right: auto;
@@ -66,11 +81,24 @@ header {
 }
 
 header img {
-    animation: 1s ease-in-out .2s both avatar;
     border-radius: 50%;
     width: clamp(120px, 26vmin, 200px);
     height: clamp(120px, 26vmin, 200px);
     pointer-events: none;
+}
+
+html.boot-js:not(.boot-intro-done) header img {
+    animation: none;
+    opacity: 0;
+    transform: scale(0.82);
+}
+
+html.boot-intro-done header img {
+    animation: avatar 0.95s ease-in-out 0.14s both;
+}
+
+html:not(.boot-js) header img {
+    animation: avatar 1s ease-in-out 0.2s both;
 }
 
 @keyframes avatar {
@@ -91,19 +119,45 @@ header .name-container {
     gap: 20px;
 }
 
-header svg {
+header h1 svg {
     backdrop-filter: saturate(2) brightness(2.5) blur(12px);
     width: min(500px, 100%);
+    transform: translateZ(0);
+}
+
+html.boot-js:not(.boot-intro-done) header h1 svg {
+    opacity: 0;
+}
+
+html.boot-intro-done header h1 svg {
+    animation: title-svg-fade-in 0.68s ease 0.08s both;
+}
+
+html:not(.boot-js) header h1 svg {
+    animation: title-svg-fade-in 0.68s ease 0.12s both;
 }
 
 header .bio {
     -webkit-mask: linear-gradient(to right, #fff 45%, transparent 55%) 0 0/220% 100% no-repeat;
     mask: linear-gradient(to right, #fff 45%, transparent 55%) 0 0/220% 100% no-repeat;
     opacity: clamp(.7, .75 * var(--scroll, 0) + .7, .85);
-    animation: 2s ease-in-out 1.9s both bio;
     color: #fff;
     font-weight: normal;
     font-size: clamp(18px, 3vmin, 25px);
+}
+
+html.boot-js:not(.boot-intro-done) header .bio {
+    animation: none !important;
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+}
+
+html.boot-intro-done header .bio {
+    animation: bio 1.85s ease-in-out 0.42s both;
+}
+
+html:not(.boot-js) header .bio {
+    animation: 2s ease-in-out 1.9s both bio;
 }
 
 @keyframes bio {
@@ -113,6 +167,28 @@ header .bio {
 
     100% {
         -webkit-mask-position: 0% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.boot-intro-done header img,
+    html:not(.boot-js) header img {
+        animation: none;
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    html.boot-intro-done header h1 svg,
+    html:not(.boot-js) header h1 svg {
+        animation: none;
+        opacity: 1;
+    }
+
+    html.boot-intro-done header .bio,
+    html:not(.boot-js) header .bio {
+        animation: none !important;
+        -webkit-mask-position: 0% 0;
+        mask-position: 0% 0;
     }
 }
 
@@ -761,3 +837,153 @@ html {
 .red { background: #ff5f56; }
 .yellow { background: #ffbd2e; }
 .green { background: #27c93f; }
+
+#anilist-login {
+    display: block;
+    margin-bottom: 8px;
+    color: #0af;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+#anilist-login:hover {
+    text-decoration: underline;
+}
+
+#anilist-avatar {
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+/* Boot: SSH terminal intro */
+.boot-terminal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(12px, 4vw, 28px);
+    box-sizing: border-box;
+    background: radial-gradient(ellipse 120% 80% at 50% 20%, #161b22 0%, #0d1117 55%);
+    transition: opacity 0.55s ease, visibility 0s linear 0.55s;
+}
+
+.boot-terminal.is-exiting {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.boot-terminal-window {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: min(880px, 100%);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 24px 80px rgba(0, 0, 0, 0.55);
+    font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+    font-size: clamp(13px, 2.1vw, 15px);
+    line-height: 1.55;
+}
+
+.boot-terminal-chrome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #21262d;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.boot-terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.boot-terminal-dot--r {
+    background: #ff5f57;
+}
+
+.boot-terminal-dot--y {
+    background: #febc2e;
+}
+
+.boot-terminal-dot--g {
+    background: #28c840;
+}
+
+.boot-terminal-title {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    color: #8b949e;
+    letter-spacing: 0.02em;
+    margin-right: 52px;
+}
+
+.boot-terminal-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    box-sizing: border-box;
+    background: #0d1117;
+    padding: clamp(16px, 3vw, 22px) clamp(14px, 2.5vw, 20px);
+    min-height: clamp(100px, 18vh, 140px);
+    color: #3fb950;
+    text-align: start;
+    direction: ltr;
+}
+
+.boot-terminal-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: flex-start;
+    column-gap: 0;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: start;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.boot-terminal-prompt {
+    color: #58a6ff;
+    font-weight: 600;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.boot-terminal-typed {
+    color: #7ee787;
+    min-width: 0;
+}
+
+.boot-terminal-cursor {
+    display: inline-block;
+    width: 0.55ch;
+    margin-left: 1px;
+    height: 1.15em;
+    vertical-align: text-bottom;
+    background: #7ee787;
+    animation: boot-cursor-blink 0.95s step-end infinite;
+}
+
+.boot-terminal.is-exiting .boot-terminal-cursor {
+    animation: none;
+    opacity: 0;
+}
+
+@keyframes boot-cursor-blink {
+    50% {
+        opacity: 0;
+    }
+}

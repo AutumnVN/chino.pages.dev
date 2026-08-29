@@ -2,11 +2,10 @@
 <html lang="en" translate="no">
 
 <head>
+    <script>document.documentElement.classList.add('boot-js')</script>
     <title>KusanagiAsami</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Konichiwa! Kusanagi Asami desu! Hajimemashite!">
-    <meta name="description" content="Betonamu kara kimashita!">
-    <meta name="description" content="Simply a Vietnamese vibing around the internet">
+    <meta name="description" content="Simply a Vietnamese vibing around the internet :3">
     <meta name="theme-color" content="#00a9ff">
     <meta property="og:site_name" content="kusanagiasami.pages.dev">
     <meta property="og:image" content="https://kusanagiasami.pages.dev/preview.png">
@@ -15,12 +14,33 @@
     <link rel="canonical" href="https://kusanagiasami.pages.dev/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/index.css">
+    <style id="boot-terminal-critical">
+        #boot-terminal{position:fixed;inset:0;z-index:100000;background:#0d1117}
+        html.boot-intro-active{overflow:hidden}
+    </style>
     <noscript>
         <link rel="stylesheet" href="/noscript.css">
+        <style>#boot-terminal{display:none!important}</style>
     </noscript>
 </head>
 
 <body style="--scroll: 0;">
+    <div id="boot-terminal" class="boot-terminal" role="presentation" aria-hidden="true">
+        <div class="boot-terminal-window">
+            <div class="boot-terminal-chrome">
+                <span class="boot-terminal-dot boot-terminal-dot--r" aria-hidden="true"></span>
+                <span class="boot-terminal-dot boot-terminal-dot--y" aria-hidden="true"></span>
+                <span class="boot-terminal-dot boot-terminal-dot--g" aria-hidden="true"></span>
+                <span class="boot-terminal-title">bash</span>
+            </div>
+            <div class="boot-terminal-body">
+                <div class="boot-terminal-line">
+                    <span class="boot-terminal-prompt">user@Asami:~$ </span><span id="boot-cmd" class="boot-terminal-typed"></span><span class="boot-terminal-cursor" aria-hidden="true"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/boot.js"></script>
     <div class="background"></div>
 
     <header>
@@ -31,7 +51,7 @@
                     <title>Kusanagi Asami</title>
                 </svg>
             </h1>
-            <div class="bio">Konichiwa! Kusanagi Asami desu! Hajimemashite!</div>
+            <div class="bio">Simply a Vietnamese vibing around the internet :3</div>
         </div>
     </header>
 
@@ -243,16 +263,13 @@
 
             <div class="widget js" style="--columns: 4; --rows: 4; min-height: 396px;">
                 <div class="anilist">
-                    <a class="content" href="https://anilist.co/user/KusanagiAsami">
-                        <div class="icon" style="background-color: #123; --size: 90%;">
-                            <svg viewBox="0 0 512 512">
-                                <path fill="#0af" d="M321.92 323.27V136.6c0-10.698-5.887-16.602-16.558-16.602h-36.433c-10.672 0-16.561 5.904-16.561 16.602v88.651c0 2.497 23.996 14.089 24.623 16.541 18.282 71.61 3.972 128.92-13.359 131.6 28.337 1.405 31.455 15.064 10.348 5.731 3.229-38.209 15.828-38.134 52.049-1.406.31.317 7.427 15.282 7.87 15.282h85.545c10.672 0 16.558-5.9 16.558-16.6v-36.524c0-10.698-5.886-16.602-16.558-16.602z" />
-                                <path fill="#fff" d="M170.68 120 74.999 393h74.338l16.192-47.222h80.96L262.315 393h73.968l-95.314-273zm11.776 165.28 23.183-75.629 25.393 75.629z" />
-                            </svg>
+                    <a id="anilist-content" class="content" href="https://anilist.co/user/KusanagiAsami">
+                        <div id="anilist-avatar" class="icon" style="background-color: #123; --size: 90%;">
+                            <svg viewBox="0 0 512 512">...</svg>
                         </div>
                         <div class="meta">
                             <div class="bold">AniList</div>
-                            <div class="opaque">KusanagiAsami</div>
+                            <div id="anilist-username" class="opaque">KusanagiAsami</div>
                         </div>
                     </a>
                     <div class="activity-container">
@@ -318,8 +335,11 @@
                 </div>
             </div>
 
-            <div class="widget" style="--columns: 4; --rows: 4; --m-columns: 4; --m-rows: 2;">
-                <a href="/chino" aria-label="Chino Kafuu">
+           <div class="widget" style="--columns: 4; --rows: 4; --m-columns: 4; --m-rows: 2;">
+                <a href="/elaina" aria-label="Random" onclick="
+                    const routes = ['/elaina', '/neurosama', '/marisa'];
+                    this.href = routes[Math.floor(Math.random() * routes.length)];
+                ">
                     <div class="image" style="--bg: var(--background); background-size: cover;"></div>
                 </a>
             </div>
@@ -342,16 +362,50 @@
             </div>
 
             <div class="widget" style="--columns: 4; --rows: 1;">
-                <a href="#" style="padding: 10px; background-color: #000;" aria-label="Visitor Counter">
-                    <div class="image" style="--bg: url(/count);"></div>
+                <div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 4px 0;">
+                    <img src="https://count.getloli.com/get/@KusanagiAsami?theme=gelbooru" alt="visitor counter" style="height: 80px; image-rendering: crisp-edges;">
+                </div>
+            </div>
+
+            <div class="widget js" style="--columns: 4; --rows: 1;">
+                <a id="lastfm-link" class="content" href="https://www.last.fm/user/KusanagiAsami" target="_blank">
+                    <div id="lastfm-image" class="icon" style="--size: 90%; border-radius: 4px;"></div>
+                    <div class="meta">
+                        <div id="lastfm-status" class="opaque" style="font-size: 0.75em;">Last played</div>
+                        <div id="lastfm-title" class="bold overflow">—</div>
+                        <div id="lastfm-artist" class="opaque overflow">—</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="widget" style="--columns: 4; --rows: 1;">
+                <a class="content" href="https://guns.lol/kusanagi_asami" target="_blank">
+                    <div class="icon" style="background-color: #1a1a1a; --size: 60%;">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/>
+                        </svg>
+                    </div>
+                    <div class="meta">
+                        <div class="bold">My old website</div>
+                        <div class="opaque">guns.lol/kusanagi_asami</div>
+                    </div>
                 </a>
             </div>
         </main>
 
         <aside>
+            <div class="widget" style="--columns: 2; --rows: 1;">
+                <div style="display:flex; align-items:center; justify-content:center; gap: 12px; padding: 8px; width:100%; height:100%;">
+                    <img src="/C++.png" title="C++ Developer" style="height: 44px; object-fit: contain;">
+                    <img src="/GitHub.png" title="GitHub User" style="height: 44px; object-fit: contain;">
+                    <img src="/GraphicDesign.png" title="Certified Graphic Designer" style="height: 44px; object-fit: contain;">
+                    <img src="/Cloudflare.png" title="Proud Cloudflare User" style="height: 44px; object-fit: contain;">
+                </div>
+            </div>
+
             <div class="project">
-                <a href="https://github.com/AutumnVN/kusanagiasami.pages.dev">
-                    <div class="bold">AutumnVN/kusanagiasami.pages.dev</div>
+                <a href="https://github.com/Pantherasami/kusanagiasami.pages.dev">
+                    <div class="bold">Pantherasami/kusanagiasami.pages.dev</div>
                     <div class="opaque">Website developed from AutumnVN's</div>
                     <div class="meta">
                         <div>
@@ -372,6 +426,32 @@
                         </div>
                     </div>
                 </a>
+            </div>
+
+            <div class="project">
+                <a href="https://github.com/Pantherasami/Motor">
+                    <div class="bold">Pantherasami/Motor</div>
+                    <div class="opaque">Made for Arduino with PlatformIO for VSCode</div>
+                    <div class="meta">
+                        <div>
+                            <svg fill="currentColor" viewBox="0 0 16 16" height="1em" width="1em">
+                                <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25"></path>
+                            </svg>
+                            <div class="star">-</div>
+                        </div>
+                        <div>
+                            <svg fill="currentColor" viewBox="0 0 16 16" height="1em" width="1em">
+                                <path d="M5 5.372a2.25 2.25 0 1 0-1.5 0v.878A2.25 2.25 0 0 0 5.75 8.5h1.5v2.128a2.251 2.251 0 1 0 1.5 0V8.5h1.5a2.25 2.25 0 0 0 2.25-2.25v-.878a2.25 2.25 0 1 0-1.5 0v.878a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 5 6.25v-.878"></path>
+                            </svg>
+                            <div class="fork">-</div>
+                        </div>
+                        <div class="lang">
+                            <div class="color-dot" style="background-color: #e42;"></div>
+                            C++
+                        </div>
+                    </div>
+                </a>
+            </div>
         </aside>
     </div>
 
@@ -381,6 +461,8 @@
         </div>
     </footer>
 
+    <script defer src="/anilist.js"></script>
+    <script defer src="/fetchanilist.js"></script>
     <script defer src="/index.js"></script>
     <script defer src="/min.js"></script>
 </body>
